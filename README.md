@@ -13,6 +13,7 @@ Examples:
 strangle 60 /path/to/game
 strangle /path/to/game FPS=24
 ```
+### Steam
 You can use this with Steam by right-clicking on a game in your library and selecting Properties and then SET LAUNCH OPTIONS... under the General tab. In the input box type:
 `strangle FPS=somenumber %command%`
 ## Building
@@ -20,5 +21,5 @@ You'll need the headers `GL/glx.h` and `EGL/egl.h` to build this. In Debian they
 ## Errata
 Does not work with all games, e.g. Doom 3 and Xonotic.
 ## FAQ
-Q: Isn't there an easier way of doing this?
+Q: Isn't there an easier way of doing this?  
 A: Probably?!
