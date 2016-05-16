@@ -17,7 +17,20 @@ strangle /path/to/game FPS=24
 You can use this with Steam by right-clicking on a game in your library and selecting Properties and then SET LAUNCH OPTIONS... under the General tab. In the input box type:
 `strangle FPS=somenumber %command%`
 ## Building
-You'll need the headers `GL/glx.h` and `EGL/egl.h` to build this. In Debian they can be found in the packages `mesa-common-dev` and `libegl1-mesa-dev`
+You'll need the headers `GL/glx.h` and `EGL/egl.h` to build this.  
+**Debian** needs these packages:
+```
+mesa-common-dev
+libegl1-mesa-dev
+```
+**OpenSUSE** needs these packages:
+```
+Mesa-libGL-devel
+Mesa-libEGL-devel
+glibc-devel-32bit
+gcc
+gcc-32bit
+```
 ## Errata
 Does not work with all games, e.g. Doom 3 and Xonotic.
 ## FAQ
