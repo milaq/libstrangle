@@ -17,7 +17,7 @@ strangle /path/to/game FPS=24
 You can use this with Steam by right-clicking on a game in your library and selecting Properties and then SET LAUNCH OPTIONS... under the General tab. In the input box type:
 `strangle FPS=somenumber %command%`
 ## Building
-If you installed a version before 2016-05-17 you should manually remove the files /usr/bin/strangle, /usr/lib/i386-linux-gnu/libstrangle.so and /usr/lib/x86_64-linux-gnu/libstrangle. The paths have changed.
+If you installed a version before 2016-05-17 you should manually remove the files /usr/bin/strangle, /usr/lib/i386-linux-gnu/libstrangle.so and /usr/lib/x86_64-linux-gnu/libstrangle.so - The paths have changed.
 
 You'll need the headers `GL/glx.h` and `EGL/egl.h` to build this.  
 **Debian** needs these packages:
