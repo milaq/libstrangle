@@ -1,9 +1,33 @@
+/*
+libstrangle - framerate limiter
+Copyright (C) 2016 Björn Spindel
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
 #include <dlfcn.h>
-#include <GL/glx.h>
-#include <EGL/egl.h>
+//#include <GL/glx.h>
+//#include <EGL/egl.h>
 #include <time.h>
 #include <unistd.h>
 #include <stdlib.h>
+
+typedef unsigned long GLXDrawable;
+typedef void Display;
+typedef void* EGLDisplay;
+typedef void* EGLSurface;
+typedef unsigned int EGLBoolean;
 
 static long DESIRED_FPS = 0;
 
@@ -60,14 +84,13 @@ static void limiter( void ) {
 	return;
 }
 
-void glXSwapBuffers( Display * dpy, GLXDrawable drawable ) {
-	void (*realFunction)( Display * dpy, GLXDrawable drawable );
+void glXSwapBuffers( Display *dpy, GLXDrawable drawable ) {
+	void (*realFunction)( Display *dpy, GLXDrawable drawable );
 	realFunction = dlsym( RTLD_NEXT, "glXSwapBuffers" );
 	realFunction( dpy, drawable );
 	limiter();
 	return;
 }
-
 EGLBoolean eglSwapBuffers( EGLDisplay display, EGLSurface surface ) {
 	EGLBoolean (*realFunction)( EGLDisplay display, EGLSurface surface);
 	EGLBoolean ret;
@@ -76,5 +99,3 @@ EGLBoolean eglSwapBuffers( EGLDisplay display, EGLSurface surface ) {
 	limiter();
 	return ret;
 }
-
-
