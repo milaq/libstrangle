@@ -1,5 +1,6 @@
 CC=gcc
-CFLAGS=-rdynamic -fPIC -D_GNU_SOURCE -shared -Wall
+CFLAGS=-rdynamic -fPIC -D_GNU_SOURCE -shared -Wall -std=c99
+LDFLAGS=-Wl,-z,relro,-z,now
 prefix=/usr/local
 bindir=$(prefix)/bin
 libdir=$(prefix)/lib
@@ -14,10 +15,10 @@ libstrangle.conf:
 	@echo "$(LIB64_PATH)/" >> libstrangle.conf
 
 libstrangle64.so:
-	$(CC) $(CFLAGS) -m64 -o libstrangle64.so libstrangle.c
+	$(CC) $(CFLAGS) $(LDFLAGS) -m64 -o libstrangle64.so libstrangle.c
 
 libstrangle32.so:
-	$(CC) $(CFLAGS) -m32 -o libstrangle32.so libstrangle.c
+	$(CC) $(CFLAGS) $(LDFLAGS) -m32 -o libstrangle32.so libstrangle.c
 
 install: all
 	install -m 0644 -D -T libstrangle.conf $(DESTDIR)/etc/ld.so.conf.d/libstrangle.conf
