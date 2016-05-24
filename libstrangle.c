@@ -58,7 +58,7 @@ static void limiter( void ) {
 	}
 
 	targetFrameTime = 1000000000 / DESIRED_FPS;
-	
+
 	if ( clock_gettime( clockType, &newTimestamp ) == 0 ) {
 		sleepyTime.tv_nsec = targetFrameTime - newTimestamp.tv_nsec + oldTimestamp.tv_nsec;
 		while( sleepyTime.tv_nsec > 0 && sleepyTime.tv_nsec < targetFrameTime ) {
