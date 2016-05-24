@@ -3,6 +3,7 @@ CFLAGS=-rdynamic -fPIC -D_GNU_SOURCE -shared -Wall
 prefix=/usr/local
 bindir=$(prefix)/bin
 libdir=$(prefix)/lib
+DOC_PATH=$(prefix)/share/doc/libstrangle
 LIB32_PATH=$(libdir)/libstrangle/lib32
 LIB64_PATH=$(libdir)/libstrangle/lib64
 
@@ -23,6 +24,7 @@ install: all
 	install -m 0755 -D -T libstrangle64.so $(DESTDIR)$(LIB32_PATH)/libstrangle.so
 	install -m 0755 -D -T libstrangle32.so $(DESTDIR)$(LIB64_PATH)/libstrangle.so
 	install -m 0755 -D -T strangle.sh $(DESTDIR)$(bindir)/strangle
+	install -m 0644 -D -T COPYING $(DESTDIR)$(DOC_PATH)/LICENSE
 	ldconfig
 
 clean:
@@ -35,3 +37,4 @@ uninstall:
 	rm -f $(DESTDIR)$(LIB32_PATH)/libstrangle.so
 	rm -f $(DESTDIR)$(LIB64_PATH)/libstrangle.so
 	rm -f $(DESTDIR)$(bindir)/strangle
+	rm -f $(DESTDIR)$(DOC_PATH)/LICENSE
