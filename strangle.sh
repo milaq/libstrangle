@@ -27,7 +27,7 @@ if [ "$1" -eq "$1" ] 2>/dev/null; then
 	shift
 elif [ "$f" -eq "$f" ] 2>/dev/null; then
 	FPS=$f
-else  
+else
 	if ! [ "$FPS" -eq "$FPS" ] 2>/dev/null; then
 		# Check if the environmental variable FPS is a valid number
 		FPS=0
