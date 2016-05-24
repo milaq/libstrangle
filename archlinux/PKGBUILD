@@ -6,7 +6,8 @@ pkgdesc="Simple FPS Limiter"
 pkgver=r13.ad457ab
 pkgrel=1
 arch=('any')
-makedepends=()
+makedepends=('gcc-multilib')
+
 depends=()
 optdepends=()
 provides=('libstrangle')
