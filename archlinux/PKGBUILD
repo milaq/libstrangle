@@ -5,7 +5,7 @@ _gitname=libstrangle
 pkgdesc="Simple FPS Limiter"
 pkgver=r13.ad457ab
 pkgrel=1
-arch=('any')
+arch=('x86_64')
 makedepends=('gcc-multilib')
 
 depends=()
