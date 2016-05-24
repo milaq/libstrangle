@@ -3,7 +3,7 @@
 pkgname=libstrangle-git
 _gitname=libstrangle
 pkgdesc="Simple FPS Limiter"
-pkgver=r24.8997c36
+pkgver=r31.49e5c02
 pkgrel=1
 arch=('x86_64')
 makedepends=('gcc-multilib')
@@ -22,7 +22,7 @@ source=("${_gitname}::git+${url}"
 sha256sums=('SKIP'
             'db3268bccb1444d87a5216ecbf1ead656289923e599b0a883817fe52bfd0f1e7'
             '40ca981cebef416abaa80247bc0a11b9bbf9e71e14172b178596c540aad9394b'
-            'bcd624c8c03ac2ab734e8e1e2678d4712d54ec721129576bc925a137898b1190')
+            'e42f778b669531493d5528df1848e3fc25510c472bcf56214336232d3e22507d')
 
 pkgver() {
   cd "${srcdir}/${_gitname}"
