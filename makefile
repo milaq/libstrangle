@@ -9,8 +9,8 @@ LIB64_PATH=$(libdir)/libstrangle/lib64
 all: libstrangle64.so libstrangle32.so libstrangle.conf
 
 libstrangle.conf:
-	echo "$(LIB32_PATH)/" > libstrangle.conf
-	echo "$(LIB64_PATH)/" >> libstrangle.conf
+	@echo "$(LIB32_PATH)/" > libstrangle.conf
+	@echo "$(LIB64_PATH)/" >> libstrangle.conf
 
 libstrangle64.so:
 	$(CC) $(CFLAGS) -m64 -o libstrangle64.so libstrangle.c
