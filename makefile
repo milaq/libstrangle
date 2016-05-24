@@ -19,7 +19,7 @@ libstrangle32.so:
 	$(CC) $(CFLAGS) -m32 -o libstrangle32.so libstrangle.c
 
 install: all
-	install -m 0644 libstrangle.conf $(DESTDIR)/etc/ld.so.conf.d/
+	install -m 0644 -D -T libstrangle.conf $(DESTDIR)/etc/ld.so.conf.d/libstrangle.conf
 	install -m 0755 -D -T libstrangle64.so $(DESTDIR)$(LIB32_PATH)/libstrangle.so
 	install -m 0755 -D -T libstrangle32.so $(DESTDIR)$(LIB64_PATH)/libstrangle.so
 	install -m 0755 -D -T strangle.sh $(DESTDIR)$(bindir)/strangle
