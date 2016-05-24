@@ -29,8 +29,6 @@ typedef void* EGLDisplay;
 typedef void* EGLSurface;
 typedef unsigned int EGLBoolean;
 
-static long DESIRED_FPS = 0;
-
 static struct timespec 	oldTimestamp,
 			newTimestamp,
 			sleepyTime,
@@ -38,35 +36,39 @@ static struct timespec 	oldTimestamp,
 
 static const clockid_t clockType = CLOCK_MONOTONIC_RAW;
 
+static long targetFrameTime = -1;
+
 static void limiter( void ) {
-	long targetFrameTime;
-	long tmp;
-	char *env;
+	if ( targetFrameTime < 0 ) {
+		long tmp;
+		char *env;
+		targetFrameTime = 0;
 
-	env = getenv( "FPS" );
-	if ( env != NULL ) {
-		tmp = strtol( env, NULL, 10 );
-		if ( tmp > 0 ) {
-			DESIRED_FPS = tmp;
+		env = getenv( "FPS" );
+		if ( env != NULL ) {
+			tmp = strtol( env, NULL, 10 );
+			if ( tmp > 0 ) {
+				targetFrameTime = 1000000000 / tmp;
+			} else {
+				return;
+			}
 		} else {
-			DESIRED_FPS = 0;
+			return;
 		}
-	}
-
-	if ( DESIRED_FPS < 1 ) {
+	} else if ( targetFrameTime == 0 ) {
 		return;
 	}
-
-	targetFrameTime = 1000000000 / DESIRED_FPS;
 
 	if ( clock_gettime( clockType, &newTimestamp ) == 0 ) {
 		sleepyTime.tv_nsec = targetFrameTime - newTimestamp.tv_nsec + oldTimestamp.tv_nsec;
 		while( sleepyTime.tv_nsec > 0 && sleepyTime.tv_nsec < targetFrameTime ) {
 			// sleep in smaller and smaller intervals
-			sleepyTime.tv_nsec /= 16;
+			sleepyTime.tv_nsec /= 2;
 			nanosleep( &sleepyTime, &remainingTime );
 			clock_gettime( clockType, &newTimestamp );
 			sleepyTime.tv_nsec = targetFrameTime - newTimestamp.tv_nsec + oldTimestamp.tv_nsec;
+			// For FPS == 1 this is needed as tv_nsec cannot exceed 999999999
+			sleepyTime.tv_nsec += newTimestamp.tv_sec*1000000000 - oldTimestamp.tv_sec*1000000000;
 		}
 		clock_gettime( clockType, &oldTimestamp );
 	}
