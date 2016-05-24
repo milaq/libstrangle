@@ -1,5 +1,5 @@
 CC=gcc
-CFLAGS=-rdynamic -fPIC -D_GNU_SOURCE -shared -Wall
+CFLAGS=-rdynamic -fPIC -D_GNU_SOURCE -shared -Wall -std=c99
 prefix=/usr/local
 bindir=$(prefix)/bin
 libdir=$(prefix)/lib
