@@ -1,5 +1,5 @@
 CC=gcc
-CFLAGS=-rdynamic -fPIC -D_GNU_SOURCE -shared -Wall -std=c99
+CFLAGS=-rdynamic -fPIC -D_GNU_SOURCE -shared -Wall -std=c99 -ldl
 LDFLAGS=-Wl,-z,relro,-z,now
 prefix=/usr/local
 bindir=$(prefix)/bin
