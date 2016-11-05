@@ -6,7 +6,8 @@ if [ "$#" -eq 0 ]; then
   echo "strangle.sh <fps-limit> <program-to-strangle>"
   echo
   echo "The fps-limit argument is required, and is expected to be an"
-  echo "integer value"
+  echo "integer value. If it is not provided, libstrangle will assume"
+  echo "there is no FPS limit"
   exit
 fi
 
