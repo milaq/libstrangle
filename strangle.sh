@@ -1,6 +1,6 @@
 #!/bin/sh
 
-if [ $# -eq 0 ]; then
+if [ "$#" -eq 0 ]; then
   echo "ERROR: No arguments"
   echo
   echo "strangle.sh <fps-limit> <program-to-strangle>"
@@ -12,7 +12,7 @@ fi
 
 if [ "$1" -eq "$1" ] 2>/dev/null; then
   # Check if the first command line argument is a valid number
-  FPS=$1
+  FPS="$1"
   shift
 else
   if ! [ "$FPS" -eq "$FPS" ] 2>/dev/null; then
