@@ -11,7 +11,6 @@ The included script strangle.sh, which installs into your PATH as just "strangle
 Examples:
 ```
 strangle 60 /path/to/game
-strangle /path/to/game FPS=24
 ```
 ### Steam
 You can use this with Steam by right-clicking on a game in your library and selecting Properties and then SET LAUNCH OPTIONS... under the General tab. In the input box type:
