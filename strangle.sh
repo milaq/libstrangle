@@ -21,5 +21,6 @@ else
   fi
 fi
 
-export FPS="${FPS}"
-LD_PRELOAD="libstrangle.so:${LD_PRELOAD}" "$@"
+# Execute the strangled program under a clean environment
+# pass through the FPS and overriden LD_PRELOAD environment variables
+exec env FPS="${FPS}" LD_PRELOAD="libstrangle.so:${LD_PRELOAD}" "$@"
