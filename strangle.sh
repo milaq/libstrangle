@@ -1,7 +1,12 @@
 #!/bin/sh
 
 if [ $# -eq 0 ]; then
-  echo "No arguments"
+  echo "ERROR: No arguments"
+  echo
+  echo "strangle.sh <fps-limit> <program-to-strangle>"
+  echo
+  echo "The fps-limit argument is required, and is expected to be an"
+  echo "integer value"
   exit
 fi
 
