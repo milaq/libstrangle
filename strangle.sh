@@ -12,7 +12,7 @@ else
 fi
 
 if [ "$#" -eq 0 ]; then
-  programname=`basename "$0"`
+  programname="$(basename "$0")"
   echo "ERROR: No program supplied"
   echo
   echo "Usage: $programname [fps-limit] <program-to-strangle>"
