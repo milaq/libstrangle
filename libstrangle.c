@@ -29,8 +29,7 @@ typedef unsigned int EGLBoolean;
 
 static struct timespec oldTimestamp,
                        newTimestamp,
-                       sleepyTime,
-                       remainingTime;
+                       sleepyTime;
 
 static const clockid_t CLOCKTYPE = CLOCK_MONOTONIC_RAW;
 
@@ -62,7 +61,7 @@ static void limiter(void) {
         while (sleepyTime.tv_nsec > 0 && sleepyTime.tv_nsec < targetFrameTime) {
             // sleep in smaller and smaller intervals
             sleepyTime.tv_nsec /= 4;
-            nanosleep(&sleepyTime, &remainingTime);
+            nanosleep(&sleepyTime, (struct timespec*) NULL);
             clock_gettime(CLOCKTYPE, &newTimestamp);
             sleepyTime.tv_nsec = targetFrameTime - newTimestamp.tv_nsec + oldTimestamp.tv_nsec;
             // For FPS == 1 this is needed as tv_nsec cannot exceed 999999999
