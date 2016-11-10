@@ -61,7 +61,7 @@ static void limiter(void) {
         sleepyTime.tv_nsec = targetFrameTime - newTimestamp.tv_nsec + oldTimestamp.tv_nsec;
         while (sleepyTime.tv_nsec > 0 && sleepyTime.tv_nsec < targetFrameTime) {
             // sleep in smaller and smaller intervals
-            sleepyTime.tv_nsec /= 2;
+            sleepyTime.tv_nsec /= 4;
             nanosleep(&sleepyTime, &remainingTime);
             clock_gettime(CLOCKTYPE, &newTimestamp);
             sleepyTime.tv_nsec = targetFrameTime - newTimestamp.tv_nsec + oldTimestamp.tv_nsec;
