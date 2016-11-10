@@ -17,8 +17,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include <dlfcn.h>
-//#include <GL/glx.h>
-//#include <EGL/egl.h>
 #include <time.h>
 #include <unistd.h>
 #include <stdlib.h>
@@ -29,75 +27,65 @@ typedef void* EGLDisplay;
 typedef void* EGLSurface;
 typedef unsigned int EGLBoolean;
 
-static struct timespec 	oldTimestamp,
-			newTimestamp,
-			sleepyTime,
-			remainingTime;
+static struct timespec oldTimestamp,
+                       newTimestamp,
+                       sleepyTime,
+                       remainingTime;
 
-static const clockid_t clockType = CLOCK_MONOTONIC_RAW;
+static const clockid_t CLOCKTYPE = CLOCK_MONOTONIC_RAW;
 
 static long targetFrameTime = -1;
 
-static void limiter( void ) {
-	if ( targetFrameTime < 0 ) {
-		long tmp;
-		char *env;
-		targetFrameTime = 0;
+static void limiter(void) {
+    if (targetFrameTime < 0) {
+        long tmp;
+        char *env;
+        targetFrameTime = 0;
 
-		env = getenv( "FPS" );
-		if ( env != NULL ) {
-			tmp = strtol( env, NULL, 10 );
-			if ( tmp > 0 ) {
-				targetFrameTime = 1000000000 / tmp;
-			} else {
-				return;
-			}
-		} else {
-			return;
-		}
-	} else if ( targetFrameTime == 0 ) {
-		return;
-	}
+        env = getenv("FPS");
+        if (env != NULL) {
+            tmp = strtol(env, NULL, 10);
+            if (tmp > 0) {
+                    targetFrameTime = 1000000000 / tmp;
+            } else {
+                return;
+            }
+        } else {
+            return;
+        }
+    } else if (targetFrameTime == 0) {
+        return;
+    }
 
-	if ( clock_gettime( clockType, &newTimestamp ) == 0 ) {
-		sleepyTime.tv_nsec = targetFrameTime - newTimestamp.tv_nsec + oldTimestamp.tv_nsec;
-		while( sleepyTime.tv_nsec > 0 && sleepyTime.tv_nsec < targetFrameTime ) {
-			// sleep in smaller and smaller intervals
-			sleepyTime.tv_nsec /= 2;
-			nanosleep( &sleepyTime, &remainingTime );
-			clock_gettime( clockType, &newTimestamp );
-			sleepyTime.tv_nsec = targetFrameTime - newTimestamp.tv_nsec + oldTimestamp.tv_nsec;
-			// For FPS == 1 this is needed as tv_nsec cannot exceed 999999999
-			sleepyTime.tv_nsec += newTimestamp.tv_sec*1000000000 - oldTimestamp.tv_sec*1000000000;
-		}
-		clock_gettime( clockType, &oldTimestamp );
-	}
-
-	/*
-	// simple but too imprecise
-	if ( clock_gettime( clockType, &newTimestamp ) == 0 ) {
-		sleepyTime.tv_nsec = targetFrameTime - newTimestamp.tv_nsec + oldTimestamp.tv_nsec;
-		if( sleepyTime.tv_nsec > 0 ) {
-			nanosleep( &sleepyTime, &remainingTime );
-		}
-		clock_gettime( clockType, &oldTimestamp );
-	}
-	*/
-	return;
+    if (clock_gettime(CLOCKTYPE, &newTimestamp) == 0) {
+        sleepyTime.tv_nsec = targetFrameTime - newTimestamp.tv_nsec + oldTimestamp.tv_nsec;
+        while (sleepyTime.tv_nsec > 0 && sleepyTime.tv_nsec < targetFrameTime) {
+            // sleep in smaller and smaller intervals
+            sleepyTime.tv_nsec /= 2;
+            nanosleep(&sleepyTime, &remainingTime);
+            clock_gettime(CLOCKTYPE, &newTimestamp);
+            sleepyTime.tv_nsec = targetFrameTime - newTimestamp.tv_nsec + oldTimestamp.tv_nsec;
+            // For FPS == 1 this is needed as tv_nsec cannot exceed 999999999
+            sleepyTime.tv_nsec += newTimestamp.tv_sec*1000000000 - oldTimestamp.tv_sec*1000000000;
+        }
+        clock_gettime(CLOCKTYPE, &oldTimestamp);
+    }
+    return;
 }
 
-void glXSwapBuffers( Display *dpy, GLXDrawable drawable ) {
-	void (*realFunction)( Display *dpy, GLXDrawable drawable );
-	realFunction = dlsym( RTLD_NEXT, "glXSwapBuffers" );
-	realFunction( dpy, drawable );
-	limiter();
-	return;
+void glXSwapBuffers(Display *dpy, GLXDrawable drawable) {
+    void (*realFunction) (Display *dpy, GLXDrawable drawable);
+    realFunction = dlsym(RTLD_NEXT, "glXSwapBuffers");
+    realFunction(dpy, drawable);
+    limiter();
+    return;
 }
-EGLBoolean eglSwapBuffers( EGLDisplay display, EGLSurface surface ) {
-	EGLBoolean (*realFunction)( EGLDisplay display, EGLSurface surface);
-	EGLBoolean ret;
-	realFunction = dlsym( RTLD_NEXT, "eglSwapBuffers" );
-	ret = realFunction( display, surface );
-	limiter();
-	return ret;
+
+EGLBoolean eglSwapBuffers(EGLDisplay display, EGLSurface surface) {
+    EGLBoolean (*realFunction) (EGLDisplay display, EGLSurface surface);
+    EGLBoolean ret;
+    realFunction = dlsym(RTLD_NEXT, "eglSwapBuffers");
+    ret = realFunction(display, surface);
+    limiter();
+    return ret;
 }
