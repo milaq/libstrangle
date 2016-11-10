@@ -7,7 +7,7 @@ if [ "$1" -eq "$1" ] 2>/dev/null; then
 else
   if ! [ "$FPS" -eq "$FPS" ] 2>/dev/null; then
     # Check if the environmental variable FPS is a valid number
-    FPS=0
+    FPS=60
   fi
 fi
 
@@ -20,7 +20,7 @@ if [ "$#" -eq 0 ]; then
   echo "  fps-limit"
   echo "        an integer describing the desired maximum frame rate"
   echo "        If missing: the environment variable \"FPS\" will be used."
-  echo "        If neither is set no limit will be applied"
+  echo "        If neither is set, a limit of 60 will be applied"
   exit 1
 fi
 
