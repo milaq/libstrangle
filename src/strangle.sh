@@ -12,7 +12,7 @@ else
 fi
 
 if [ "$#" -eq 0 ]; then
-  programname="$(basename "$0")"
+  programname=`basename "$0"`
   echo "ERROR: No program supplied"
   echo
   echo "Usage: $programname [fps-limit] <program-to-strangle>"
@@ -26,4 +26,4 @@ fi
 
 # Execute the strangled program under a clean environment
 # pass through the FPS and overriden LD_PRELOAD environment variables
-exec env FPS="${FPS}" LD_PRELOAD="libstrangle.so:${LD_PRELOAD}" "$@"
+exec env FPS="${FPS}" LD_PRELOAD="${LD_PRELOAD}:libstrangle.so" "$@"

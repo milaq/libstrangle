@@ -1,5 +1,5 @@
 CC=gcc
-CFLAGS=-rdynamic -fPIC -D_GNU_SOURCE -shared -Wall -std=c99
+CFLAGS=-rdynamic -fPIC -shared -Wall -std=c99
 LDFLAGS=-Wl,-z,relro,-z,now -ldl
 prefix=/usr/local
 bindir=$(prefix)/bin
@@ -7,31 +7,37 @@ libdir=$(prefix)/lib
 DOC_PATH=$(prefix)/share/doc/libstrangle
 LIB32_PATH=$(libdir)/libstrangle/lib32
 LIB64_PATH=$(libdir)/libstrangle/lib64
+SOURCEDIR=src/
+BUILDDIR=build/
+SOURCES=$(wildcard $(SOURCEDIR)*.c)
 
-all: libstrangle64.so libstrangle32.so libstrangle.conf
+all: $(BUILDDIR)libstrangle64.so $(BUILDDIR)libstrangle32.so $(BUILDDIR)libstrangle.conf
 
-libstrangle.conf:
-	@echo "$(LIB32_PATH)/" > libstrangle.conf
-	@echo "$(LIB64_PATH)/" >> libstrangle.conf
+$(BUILDDIR):
+	mkdir -p $(BUILDDIR)
 
-libstrangle64.so:
-	$(CC) $(CFLAGS) $(LDFLAGS) -m64 -o libstrangle64.so libstrangle.c
+$(BUILDDIR)libstrangle.conf: $(BUILDDIR)
+	@echo "$(LIB32_PATH)/" > $(BUILDDIR)libstrangle.conf
+	@echo "$(LIB64_PATH)/" >> $(BUILDDIR)libstrangle.conf
 
-libstrangle32.so:
-	$(CC) $(CFLAGS) $(LDFLAGS) -m32 -o libstrangle32.so libstrangle.c
+$(BUILDDIR)libstrangle64.so: $(BUILDDIR)
+	$(CC) $(CFLAGS) $(LDFLAGS) -m64 -o $(BUILDDIR)libstrangle64.so $(SOURCES)
+
+$(BUILDDIR)libstrangle32.so: $(BUILDDIR)
+	$(CC) $(CFLAGS) $(LDFLAGS) -m32 -o $(BUILDDIR)libstrangle32.so $(SOURCES)
 
 install: all
-	install -m 0644 -D -T libstrangle.conf $(DESTDIR)/etc/ld.so.conf.d/libstrangle.conf
-	install -m 0755 -D -T libstrangle64.so $(DESTDIR)$(LIB32_PATH)/libstrangle.so
-	install -m 0755 -D -T libstrangle32.so $(DESTDIR)$(LIB64_PATH)/libstrangle.so
-	install -m 0755 -D -T strangle.sh $(DESTDIR)$(bindir)/strangle
+	install -m 0644 -D -T $(BUILDDIR)libstrangle.conf $(DESTDIR)/etc/ld.so.conf.d/libstrangle.conf
+	install -m 0755 -D -T $(BUILDDIR)libstrangle64.so $(DESTDIR)$(LIB32_PATH)/libstrangle.so
+	install -m 0755 -D -T $(BUILDDIR)libstrangle32.so $(DESTDIR)$(LIB64_PATH)/libstrangle.so
+	install -m 0755 -D -T $(SOURCEDIR)strangle.sh $(DESTDIR)$(bindir)/strangle
 	install -m 0644 -D -T COPYING $(DESTDIR)$(DOC_PATH)/LICENSE
 	ldconfig
 
 clean:
-	rm -f libstrangle64.so
-	rm -f libstrangle32.so
-	rm -f libstrangle.conf
+	rm -f $(BUILDDIR)libstrangle64.so
+	rm -f $(BUILDDIR)libstrangle32.so
+	rm -f $(BUILDDIR)libstrangle.conf
 
 uninstall:
 	rm -f $(DESTDIR)/etc/ld.so.conf.d/libstrangle.conf
