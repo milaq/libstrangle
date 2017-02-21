@@ -1,5 +1,5 @@
 CC=gcc
-CFLAGS=-rdynamic -fPIC -shared -Wall -std=c99
+CFLAGS=-rdynamic -fPIC -shared -Wall -std=c99 -fvisibility=hidden -DHOOK_DLSYM
 LDFLAGS=-Wl,-z,relro,-z,now -ldl
 prefix=/usr/local
 bindir=$(prefix)/bin
@@ -28,8 +28,8 @@ $(BUILDDIR)libstrangle32.so: $(BUILDDIR)
 
 install: all
 	install -m 0644 -D -T $(BUILDDIR)libstrangle.conf $(DESTDIR)/etc/ld.so.conf.d/libstrangle.conf
-	install -m 0755 -D -T $(BUILDDIR)libstrangle64.so $(DESTDIR)$(LIB32_PATH)/libstrangle.so
-	install -m 0755 -D -T $(BUILDDIR)libstrangle32.so $(DESTDIR)$(LIB64_PATH)/libstrangle.so
+	install -m 0755 -D -T $(BUILDDIR)libstrangle32.so $(DESTDIR)$(LIB32_PATH)/libstrangle.so
+	install -m 0755 -D -T $(BUILDDIR)libstrangle64.so $(DESTDIR)$(LIB64_PATH)/libstrangle.so
 	install -m 0755 -D -T $(SOURCEDIR)strangle.sh $(DESTDIR)$(bindir)/strangle
 	install -m 0644 -D -T COPYING $(DESTDIR)$(DOC_PATH)/LICENSE
 	ldconfig
