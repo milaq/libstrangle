@@ -25,6 +25,7 @@ along with libstrangle.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <dlfcn.h>
 
+EXPORTED
 EGLBoolean eglSwapBuffers( EGLDisplay display, EGLSurface surface ) {
 	EGLBoolean (*realFunction)( EGLDisplay display, EGLSurface surface)
 	= real_dlsym( RTLD_NEXT, "eglSwapBuffers" );

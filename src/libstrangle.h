@@ -20,12 +20,18 @@ along with libstrangle.  If not, see <http://www.gnu.org/licenses/>.
 #ifndef LIBSTRANGLE_H_
 #define LIBSTRANGLE_H_
 
-void init( void ) __attribute__ ((constructor));
-void *getStrangleFunc( const char *symbol );
+#define EXPORTED __attribute__((__visibility__("default")))
 
-void *dlsym( void *handle, const char *name );
+// Private
+void *getStrangleFunc( const char *symbol );
 int getInterval( int interval );
 void setVsync( void );
 void limiter( void );
+void strToLower( char *str );
+char *getenv_array( int count, const char **names );
+
+// Exported
+void *dlsym( void *handle, const char *name );
+void glFinish( void );
 
 #endif

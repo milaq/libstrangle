@@ -29,17 +29,20 @@ along with libstrangle.  If not, see <http://www.gnu.org/licenses/>.
 #include <unistd.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 
 static long targetFrameTime = -1;
 static int *vsync = NULL;
+static bool *glfinish = NULL;
 
+__attribute__ ((constructor))
 void init( void ) {
 	long tmp;
 	char *env;
 
 	targetFrameTime = 0;
 
-	env = getenv( "FPS" );
+	env = getenv_array( 3, (const char*[]){ "FPS", "Fps", "fps" } );
 	if ( env != NULL ) {
 		tmp = strtol( env, NULL, 10 );
 		if ( tmp > 0 ) {
@@ -47,13 +50,34 @@ void init( void ) {
 		}
 	}
 
-	env = getenv( "VSYNC" );
+	env = getenv_array( 4, (const char*[]){ "VSYNC", "VSync", "Vsync", "vsync" } );
 	if ( env != NULL ) {
-		char *endptr = NULL;
-		tmp = strtol( env, &endptr, 10 );
-		if ( env != endptr ) {
-			vsync = malloc(sizeof(*vsync));
-			*vsync = (int)tmp;
+		strToLower( env );
+		if ( !strcmp( "true", env ) || !strcmp( "on", env ) ) {
+			vsync = malloc( sizeof(*vsync) );
+			*vsync = 1;
+		} else if ( !strcmp( "false", env ) || !strcmp( "off", env ) ) {
+			vsync = malloc( sizeof(*vsync) );
+			*vsync = 0;
+		} else {
+			char *endptr = NULL;
+			tmp = strtol( env, &endptr, 10 );
+			if ( env != endptr ) {
+				vsync = malloc(sizeof(*vsync));
+				*vsync = (int)tmp;
+			}
+		}
+	}
+
+	env = getenv_array( 6, (const char*[]){ "GLFINISH", "glfinish", "glFinish", "Glfinish", "GlFinish", "GLFinish" } );
+	if ( env != NULL ) {
+		strToLower( env );
+		if ( !strcmp( "true", env ) || !strcmp( "on", env ) || !strcmp( "1", env ) ) {
+			glfinish = malloc( sizeof(bool) );
+			*glfinish = true;
+		} else if ( !strcmp( "false", env ) || !strcmp( "off", env ) || !strcmp( "0", env ) ) {
+			glfinish = malloc( sizeof(bool) );
+			*glfinish = false;
 		}
 	}
 }
@@ -65,6 +89,10 @@ void limiter( void ) {
 	                       newTimestamp,
 	                       sleepyTime,
 	                       remainingTime;
+
+	if ( glfinish != NULL && *glfinish == true ) {
+		glFinish();
+	}
 
 	if ( targetFrameTime <= 0 ) {
 		return;
@@ -96,16 +124,6 @@ void limiter( void ) {
 		clock_gettime( clockType, &oldTimestamp );
 	}
 	*/
-}
-
-void *dlsym( void *handle, const char *name )
-{
-	void* func = getStrangleFunc( name );
-	if ( func != NULL ) {
-		return func;
-	}
-
-	return real_dlsym( handle, name );
 }
 
 void *getStrangleFunc( const char *symbol ) {
@@ -143,4 +161,44 @@ void setVsync( void ) {
 	if ( vsync != NULL ) {
 		glXSwapIntervalSGI( *vsync );
 	}
+}
+
+char *getenv_array( int count, const char **names ) {
+	char *env = NULL;
+	for ( int i = 0; i < count; ++i ) {
+		env = getenv( names[i] );
+		if ( env != NULL && strcmp( env, "" ) ) {
+			break;
+		}
+	}
+	return env;
+}
+
+void strToLower( char *str ) {
+	for ( char *p = str; *p; ++p ) {
+		*p = tolower( *p );
+	}
+}
+
+#ifdef HOOK_DLSYM
+EXPORTED
+void *dlsym( void *handle, const char *name )
+{
+	void* func = getStrangleFunc( name );
+	if ( func != NULL ) {
+		return func;
+	}
+
+	return real_dlsym( handle, name );
+}
+#endif
+
+EXPORTED
+void glFinish( void ) {
+	if ( glfinish != NULL && *glfinish == false ) {
+		return;
+	}
+	void (*realFunction)( void )
+	= real_dlsym( RTLD_NEXT, "glFinish" );
+	realFunction();
 }

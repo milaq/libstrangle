@@ -26,6 +26,7 @@ along with libstrangle.  If not, see <http://www.gnu.org/licenses/>.
 #include <dlfcn.h>
 #include <stdlib.h>
 
+EXPORTED
 void glXSwapBuffers( Display *dpy, GLXDrawable drawable ) {
 	void (*realFunction)( Display *dpy, GLXDrawable drawable )
 	= real_dlsym( RTLD_NEXT, "glXSwapBuffers" );
@@ -35,24 +36,28 @@ void glXSwapBuffers( Display *dpy, GLXDrawable drawable ) {
 	limiter();
 }
 
+EXPORTED
 void glXSwapIntervalEXT( Display *dpy, GLXDrawable drawable, int interval ) {
 	void (*realFunction)( Display *dpy, GLXDrawable drawable, int interval )
 	= real_dlsym( RTLD_NEXT, "glXSwapIntervalEXT" );
 	realFunction( dpy, drawable, getInterval( interval ) );
 }
 
+EXPORTED
 int glXSwapIntervalSGI( int interval ) {
 	int (*realFunction)( int interval )
 	= real_dlsym( RTLD_NEXT, "glXSwapIntervalSGI" );
 	return realFunction( getInterval( interval ) );
 }
 
+EXPORTED
 int glXSwapIntervalMESA( unsigned int interval ) {
 	int (*realFunction)( int interval )
 	= real_dlsym( RTLD_NEXT, "glXSwapIntervalMESA" );
 	return realFunction( getInterval( interval ) );
 }
 
+EXPORTED
 void *glXGetProcAddress( const GLubyte * procName ) {
 	void *func = getStrangleFunc( (const char*)procName );
 	if ( func != NULL ) {
@@ -64,6 +69,7 @@ void *glXGetProcAddress( const GLubyte * procName ) {
 	return realFunction( procName );
 }
 
+EXPORTED
 void *glXGetProcAddressARB( const GLubyte * procName ) {
 	void *func = getStrangleFunc( (const char*)procName );
 	if ( func != NULL ) {
@@ -75,6 +81,7 @@ void *glXGetProcAddressARB( const GLubyte * procName ) {
 	return realFunction( procName );
 }
 
+EXPORTED
 Bool glXMakeCurrent( Display * dpy, GLXDrawable drawable, GLXContext ctx ) {
 	Bool (*realFunction)( Display * dpy, GLXDrawable drawable, GLXContext ctx )
 	= real_dlsym( RTLD_NEXT, "glXMakeCurrent" );
