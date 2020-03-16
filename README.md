@@ -1,3 +1,7 @@
+# WARNING: Unmaintained fork!
+
+this is just a (unmaintained) fork of: https://gitlab.com/torkel104/libstrangle
+
 # libstrangle
 Frame rate limiter for Linux/OpenGL.
 ## Usage
